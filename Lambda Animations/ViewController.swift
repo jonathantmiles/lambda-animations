@@ -25,7 +25,6 @@ class ViewController: UIViewController {
         
         let letterArray: [UILabel] = [letterL, letterA1, letterM, letterB, letterD, letterA2]
         
-        var letterLocations: [CGPoint] = []
         
         if shouldScramble == true {
             CATransaction.begin()
@@ -40,6 +39,8 @@ class ViewController: UIViewController {
             
             
             let letterRandomScatter = CAKeyframeAnimation(keyPath: "position")
+            
+            letterLocations = []
             
             for letter in letterArray {
                 CATransaction.begin()
@@ -57,7 +58,7 @@ class ViewController: UIViewController {
                 let values = [startpoint, endpoint]
                 letterRandomScatter.values = values
                 letterRandomScatter.duration = 3.0
-                // letterRandomScatter.transform = CGAffineTransform(rotationAngle: random_angle)
+                
                 letter.layer.add(letterRandomScatter, forKey: "Letter scatter animation for \(letter)")
                 CATransaction.setCompletionBlock {
                     letter.layer.position = endpoint
@@ -81,25 +82,19 @@ class ViewController: UIViewController {
             
             let letterReturn = CAKeyframeAnimation(keyPath: "position")
             
+            var indexCount: Int = 0
+            
             for letter in letterArray {
                 CATransaction.begin()
-                let originalX = letter.frame.origin.x
-                let originalY = letter.frame.origin.y
                 
-                let x = CGFloat(arc4random_uniform(200))
-                let y = CGFloat(arc4random_uniform(200))
+                let startpoint = letter.center
+                //if indexCount < letterLocations.count {
                 
-                let trajectoryX = (originalX + x)
-                let trajectoryY = (originalY + y)
+                //}
+                let endpoint = letterLocations[indexCount]
+                indexCount += 1
                 
-                let startpoint = CGPoint(x: originalX, y: originalY)
-                let endpoint = CGPoint(x: x, y: y)
-                
-                let values = [startpoint,
-                              CGPoint(x: trajectoryX * 0.25, y: trajectoryY * 0.25),
-                              CGPoint(x: trajectoryX * 0.5, y: trajectoryY * 0.5),
-                              CGPoint(x: trajectoryX * 0.75, y: trajectoryY * 0.75),
-                              endpoint]
+                let values = [startpoint, endpoint]
                 letterReturn.values = values
                 letterReturn.duration = 3.0
                 letter.layer.add(letterReturn, forKey: "Letter scatter animation for \(letter)")
@@ -125,6 +120,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var lambdaLogo: UIImageView!
     
+    var letterLocations: [CGPoint] = []
     var shouldScramble: Bool = true
 }
 
